@@ -55,9 +55,8 @@ the following properties:
 *destination* is the identifier of the peer to whom we want to open a connection to. If destination is undefined, the connection request will be sent to the root.
 
 After a connection has been initiated:
-
-    1. If the connection fails, *peer* will emit a 'Bootstrap timeout' error.
-    2. *peer* emits the 'identifier' event with the id it has been assigned by
+  1. If the connection fails, *peer* will emit a 'Bootstrap timeout' error.
+  2. *peer* emits the 'identifier' event with the id it has been assigned by
 the bootstrap server.
 
 # Bootstrap server
