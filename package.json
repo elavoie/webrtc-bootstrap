@@ -1,0 +1,30 @@
+{
+  "name": "webrtc-tree-overlay-bootstrap",
+  "version": "1.0.0",
+  "description": "Bootstrap client and server to create a WebRTC tree overlay",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node bin/server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elavoie/webrtc-tree-overlay-bootstrap.git"
+  },
+  "author": "Erick Lavoie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elavoie/webrtc-tree-overlay-bootstrap/issues"
+  },
+  "homepage": "https://github.com/elavoie/webrtc-tree-overlay-bootstrap#readme",
+  "dependencies": {
+    "debug": "^2.6.1",
+    "randombytes": "^2.0.3",
+    "simple-websocket": "^5.0.0",
+    "ws": "^2.1.0"
+  },
+  "devDependencies": {
+    "electron-webrtc": "^0.3.0",
+    "simple-peer": "^6.4.3"
+  }
+}

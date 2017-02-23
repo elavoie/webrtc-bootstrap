@@ -1,0 +1,5 @@
+{
+  "name": "Bootstrap Server",
+  "description": "A bootstrap server for creating WebRTC tree overlays",
+  "repository": "https://github.com/elavoie/webrtc-tree-overlay-bootstrap"
+}
