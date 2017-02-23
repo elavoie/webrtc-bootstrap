@@ -1,4 +1,4 @@
-This is enables the bootstrapping of a (WebRTC tree overlay)[https://github.com/elavoie/webrtc-tree-overlay] through its root node.
+This is enables the bootstrapping of a [WebRTC tree overlay](https://github.com/elavoie/webrtc-tree-overlay) through its root node.
 
 Any potential peer connects to the bootstrap server and request a connection.
 If a peer knows to whom it should connect it specifies the destination id.
@@ -50,7 +50,7 @@ the following properties:
 
 ## bootstrap.connect(peer, [destination])
 
-*peer* should be a (SimplePeer)[https://github.com/feross/simple-peer]
+*peer* should be a [SimplePeer](https://github.com/feross/simple-peer)
 
 *destination* is the identifier of the peer to whom we want to open a connection to. If destination is undefined, the connection request will be sent to the root.
 
