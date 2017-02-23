@@ -38,14 +38,16 @@ Client.prototype.connect = function (peer, destination) {
   var success = false
   var socket = new Socket('ws://' + this.host + '/join')
     .on('connect', function () {
-      log('signaling websocket connected, sending request')
+      log('signaling websocket connected')
       peer.on('signal', function (data) {
-        log('connect() signal received: ' + data)
-        socket.send(JSON.stringify({
+        var message = JSON.stringify({
           origin: null, // set by server if null
           destination: destination || null, // if null, then will be sent to root
           signal: data
-        }))
+        })
+        log('connect() sending message with signal:')
+        log(message)
+        socket.send(message)
       })
       peer.once('connect', function () {
         log('bootstrap succeeded, closing signaling websocket connection')
@@ -58,11 +60,12 @@ Client.prototype.connect = function (peer, destination) {
           socket.destroy()
           peer.emit('error', new Error('Bootstrap timeout'))
         }
-      }, 30 * 1000)
+      }, 60 * 1000)
     })
     .on('data', function (data) {
-      log('connect() data received: ' + data)
-      var message = JSON.parse(data)
+      log('connect() signal received:')
+      log(data.toString())
+      var message = JSON.parse(data.toString())
       // Optimization to send the subsequent ICE
       // messages directly rather than through the tree
       // overlay: our next signals will go directly

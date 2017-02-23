@@ -4,7 +4,7 @@
   "description": "Bootstrap client and server to create a WebRTC tree overlay",
   "main": "src/index.js",
   "scripts": {
-    "start": "node bin/server",
+    "start": "DEBUG=webrtc* node bin/server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
