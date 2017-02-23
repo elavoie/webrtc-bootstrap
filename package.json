@@ -19,6 +19,7 @@
   "homepage": "https://github.com/elavoie/webrtc-tree-overlay-bootstrap#readme",
   "dependencies": {
     "debug": "^2.6.1",
+    "express": "^4.14.1",
     "randombytes": "^2.0.3",
     "simple-websocket": "^5.0.0",
     "ws": "^2.1.0"

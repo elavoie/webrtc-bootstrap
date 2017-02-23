@@ -3,6 +3,10 @@ var ws = require('ws')
 var debug = require('debug')
 var log = debug('webrtc-tree-overlay-signaling')
 var randombytes = require('randombytes')
+var express = require('express')
+var app = express()
+var path = require('path')
+app.use(express.static(path.join(__dirname, '../public')))
 
 function Server (port, secret) {
   port = port || process.env.PORT || 5000
@@ -35,7 +39,7 @@ function Server (port, secret) {
     }
   }
 
-  this.httpServer = http.createServer()
+  this.httpServer = http.createServer(app)
   this.httpServer.listen(port)
   console.log('http server listening on %d', port)
 
