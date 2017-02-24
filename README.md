@@ -66,6 +66,14 @@ address) that supports WebSockets.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
+## Usage
+
+    # Using the configuration file
+    node bin/server path_to_config.json
+
+    # Or using environment variables
+    SECRET=12345 node bin/server
+
 ## Secret configuration
 
 Please fork this repository, copy config.example.json to config.json, and change the secret in the config.json file to

@@ -1,5 +1,10 @@
 var fs = require('fs')
 var path = require('path')
 
+var configFile = process.argv[2]
+var secret = configFile 
+             ? JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json')).toString())['secret']
+             : process.env.SECRET
+
 var Server = require('../src/server')
-new Server(null, JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json')).toString())['secret'])
+new Server(null, secret)

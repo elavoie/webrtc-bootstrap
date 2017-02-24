@@ -10,6 +10,11 @@ app.use(express.static(path.join(__dirname, '../public')))
 
 function Server (port, secret) {
   port = port || process.env.PORT || 5000
+  secret = secret || process.env.SECRET
+
+  if (!secret) {
+    throw new Error('Invalid secret: ' + secret)
+  }
 
   var root = null
   var prospects = {}
