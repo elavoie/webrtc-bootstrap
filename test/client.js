@@ -22,6 +22,7 @@ bootstrap.root(config['secret'], function (req) {
   }
 
   console.log('Forwarding to existing peer ' + req.origin)
+
   newcomers[req.origin].signal(req.signal)
 })
 

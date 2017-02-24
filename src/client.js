@@ -33,38 +33,56 @@ Client.prototype.connect = function (peer, destination) {
   var log = debug('webrtc-tree-overlay-signaling:connect ' + connectId++)
   log('connect(' + peer + ',' + destination + ')')
 
+  var messageNb = 0
+
   if (!(peer instanceof SimplePeer)) {
     throw new Error('Invalid peer, should be an instance of SimplePeer (simple-peer)')
   }
 
+  var signalQueue = []
+
+  peer.on('signal', function (data) {
+    var message = JSON.stringify({
+      origin: null, // set by server if null
+      destination: destination || null, // if null, then will be sent to root
+      signal: data,
+      rank: messageNb++
+    })
+    log('connect() sending message with signal:')
+    log(message)
+    if (!socketConnected) {
+      signalQueue.push(message)
+    } else {
+      socket.send(message)
+    }
+  })
+  peer.once('connect', function () {
+    log('bootstrap succeeded, closing signaling websocket connection')
+    success = true
+    socket.destroy()
+  })
+  setTimeout(function () {
+    if (!success) {
+      log('bootstrap timeout, closing signaling websocket connection')
+      socket.destroy()
+      peer.emit('error', new Error('Bootstrap timeout'))
+    }
+  }, 60 * 1000)
+
   var success = false
+  var socketConnected = false
   var socket = new Socket('ws://' + this.host + '/join')
     .on('connect', function () {
+      socketConnected = true
       log('signaling websocket connected')
-      peer.on('signal', function (data) {
-        var message = JSON.stringify({
-          origin: null, // set by server if null
-          destination: destination || null, // if null, then will be sent to root
-          signal: data
-        })
-        setTimeout(function () {
-          log('connect() sending message with signal:')
-          log(message)
-          socket.send(message)
-        }, 200)
-      })
-      peer.once('connect', function () {
-        log('bootstrap succeeded, closing signaling websocket connection')
-        success = true
-        socket.destroy()
-      })
-      setTimeout(function () {
-        if (!success) {
-          log('bootstrap timeout, closing signaling websocket connection')
-          socket.destroy()
-          peer.emit('error', new Error('Bootstrap timeout'))
+
+      if (signalQueue.length > 0) {
+        var queue = signalQueue.slice(0)
+        signalQueue = []
+        for (var i = 0; i < queue.length; ++i) {
+          socket.send(queue[i])
         }
-      }, 60 * 1000)
+      }
     })
     .on('data', function (data) {
       log('connect() signal received:')
