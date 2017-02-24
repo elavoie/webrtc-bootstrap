@@ -68,5 +68,5 @@ address) that supports WebSockets.
 
 ## Secret configuration
 
-Please fork this repository and change the secret in the config.json file to
+Please fork this repository, copy config.example.json to config.json, and change the secret in the config.json file to
 ensure only your root node can connect as root to the bootstrap server.
