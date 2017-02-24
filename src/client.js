@@ -28,7 +28,9 @@ Client.prototype.root = function (secret, onRequest) {
     })
 }
 
+var connectId = 0
 Client.prototype.connect = function (peer, destination) {
+  var log = debug('webrtc-tree-overlay-signaling:connect ' + connectId++)
   log('connect(' + peer + ',' + destination + ')')
 
   if (!(peer instanceof SimplePeer)) {
@@ -45,9 +47,11 @@ Client.prototype.connect = function (peer, destination) {
           destination: destination || null, // if null, then will be sent to root
           signal: data
         })
-        log('connect() sending message with signal:')
-        log(message)
-        socket.send(message)
+        setTimeout(function () {
+          log('connect() sending message with signal:')
+          log(message)
+          socket.send(message)
+        }, 200)
       })
       peer.once('connect', function () {
         log('bootstrap succeeded, closing signaling websocket connection')

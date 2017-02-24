@@ -5,7 +5,7 @@ var Peer = require('simple-peer')
 var wrtc = require('electron-webrtc')()
 
 var config = JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json')))
-var bootstrap = new Client(config['host'])
+var bootstrap = new Client(config['host' + (process.argv.length > 2 ? '-' + process.argv[2] : '')])
 
 var newcomers = {}
 
