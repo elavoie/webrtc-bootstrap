@@ -64,7 +64,7 @@ itself with the following properties:
 ## peer =  bootstrap.connect([destination, peerOpts])
 
 *destination* is the identifier of the peer we want to connect to. If it is
-`undefined` or `falsy`, `initiator: true` will be set on *peerOpts* the
+`undefined` or `falsy`, `initiator: true` will be set on *peerOpts* and the
 requests will go to the root. Otherwise, if *destination* is set to
 `req.origin`, then a connection will be established with the originator.
 
@@ -72,16 +72,16 @@ requests will go to the root. Otherwise, if *destination* is set to
 
 Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
 
-After a connect call:
+After a connect call if the connection succeeds, *peer* will emit the usual 'connect' event. 
+Two new events are added compared to the basic Simple Peer:
   1. If the connection fails, *peer* will emit a 'Bootstrap timeout' error.
-  2. If the connection succeeds, *peer* will emit the usual 'connect' event.
-  3. During the handshake protocol, *peer* emits the 'identifier' event with
+  2. During the handshake protocol, *peer* emits the 'identifier' event with
      the id it has been assigned by the bootstrap server.
 
 # Bootstrap server
 
-The server can be deployed on any public server (server with a public IP
-address) that supports WebSockets.
+The server can be run locally for tests or deployed on any public server (server with a public IP
+address) that supports WebSockets to create overlays on the Internet.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
