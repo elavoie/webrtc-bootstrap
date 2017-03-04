@@ -1,6 +1,10 @@
-This library enables the bootstrapping of a WebRTC overlay made of [Simple Peers](https://github.com/feross/simple-peer). 
+This library enables the bootstrapping of a WebRTC overlay made of [Simple
+Peers](https://github.com/feross/simple-peer). 
 
-The handshake between the requester and the answerer are performed over WebSockets connected to the bootstrap server. After the handshake has been performed the websocket connections are closed to conserve resources on the bootstrap server.
+The handshake between the requester and the answerer are performed over
+WebSockets connected to the bootstrap server. After the handshake has been
+performed the websocket connections are closed to conserve resources on the
+bootstrap server.
 
 Any potential peer connects to the bootstrap server and requests a connection.
 The request is passed to the root which is then responsible for either
@@ -49,9 +53,12 @@ the authorized root will receive requests.
 
 *onRequest(req)* is a callback that will be called with a request object,
 itself with the following properties:
-  - `req.origin`: the identifier of the originator of the request (automatically
-    created by the bootstrap server)
-  - `req.signal`: the SimplePeer signal to establish the WebRTC connection. Because of the ICE trickle protocol for signaling, the same peer may trigger multiple calls to *onRequest*. It is the responsibility of the root node to ensure all the requests will be routed to the same peer.
+  - `req.origin`: the identifier of the originator of the request
+    (automatically created by the bootstrap server)
+  - `req.signal`: the SimplePeer signal to establish the WebRTC connection.
+    Because of the ICE trickle protocol for signaling, the same peer may
+trigger multiple calls to *onRequest*. It is the responsibility of the root
+node to ensure all the requests will be routed to the same peer.
 
 The same connecting peer may generate multiple requests (unless
 `peerOpts.tricke: false`). They should all be routed to the same answering
@@ -59,7 +66,10 @@ peer.
 
 ## peer =  bootstrap.connect([destination, peerOpts])
 
-*destination* is the identifier of the peer we want to connect to. If it is `undefined` or `falsy`, `initiator: true` will be set on *peerOpts* the requests will go to the root. Otherwise, if *destination* is set to `req.origin`, then a connection will be established with the originator.
+*destination* is the identifier of the peer we want to connect to. If it is
+`undefined` or `falsy`, `initiator: true` will be set on *peerOpts* the
+requests will go to the root. Otherwise, if *destination* is set to
+`req.origin`, then a connection will be established with the originator.
 
 *peerOpts* will be passed to the [SimplePeer](https://github.com/feross/simple-peer) constructor.
 
@@ -68,7 +78,8 @@ Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
 After a connect call:
   1. If the connection fails, *peer* will emit a 'Bootstrap timeout' error.
   2. If the connection succeeds, *peer* will emit the usual 'connect' event.
-  3. During the handshake protocol, *peer* emits the 'identifier' event with the id it has been assigned by the bootstrap server.
+  3. During the handshake protocol, *peer* emits the 'identifier' event with
+     the id it has been assigned by the bootstrap server.
 
 # Bootstrap server
 
@@ -93,7 +104,8 @@ connect as root to the bootstrap server.
 
 # Projects
 
-This library is used by the the following [library](https://github.com/elavoie/webrtc-tree-overlay) to organize peers in
+This library is used by the the following
+[library](https://github.com/elavoie/webrtc-tree-overlay) to organize peers in
 a tree. 
 
 Submit a pull-request to add your own!
