@@ -57,12 +57,9 @@ itself with the following properties:
     (automatically created by the bootstrap server)
   - `req.signal`: the SimplePeer signal to establish the WebRTC connection.
     Because of the ICE trickle protocol for signaling, the same peer may
-trigger multiple calls to *onRequest*. It is the responsibility of the root
-node to ensure all the requests will be routed to the same peer.
-
-The same connecting peer may generate multiple requests (unless
-`peerOpts.tricke: false`). They should all be routed to the same answering
-peer.
+    trigger multiple calls to *onRequest* (unless
+    `peerOpts.tricke: false`). It is the responsibility of the root
+    node to ensure all the requests will be routed to the same peer.
 
 ## peer =  bootstrap.connect([destination, peerOpts])
 
