@@ -1,6 +1,6 @@
 {
   "name": "webrtc-tree-overlay-bootstrap",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Bootstrap client and server to create a WebRTC tree overlay",
   "main": "src/index.js",
   "scripts": {

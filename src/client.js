@@ -29,15 +29,19 @@ Client.prototype.root = function (secret, onRequest) {
 }
 
 var connectId = 0
-Client.prototype.connect = function (peer, destination) {
+Client.prototype.connect = function (peerOpts, destination) {
+  peerOpts = peerOpts || {}
+
   var log = debug('webrtc-tree-overlay-signaling:connect ' + connectId++)
-  log('connect(' + peer + ',' + destination + ')')
+  log('connect(' + peerOpts + ',' + destination + ')')
 
   var messageNb = 0
 
-  if (!(peer instanceof SimplePeer)) {
-    throw new Error('Invalid peer, should be an instance of SimplePeer (simple-peer)')
+  if (!destination) {
+    peerOpts.initiator = true
   }
+
+  var peer = new SimplePeer(peerOpts)
 
   var signalQueue = []
 
