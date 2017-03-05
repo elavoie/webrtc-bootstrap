@@ -33,10 +33,10 @@ performed, the websocket connections are closed to conserve resources.
         newcomers[req.origin] = bootstrap.connect(req)
         newcomers[req.origin].on('data', function (data) {
           console.log(data)
-          newcomers[req.origin].send('world')
+          newcomers[req.origin].send('pong')
         })
       } else {
-        // Pass the signal data
+        console.log('Passing the signal data')
         newcomers[req.origin].signal(req.signal)
       }
     })
