@@ -1,6 +1,5 @@
-This library enables the bootstrapping of WebRTC connections made with [Simple
-Peers](https://github.com/feross/simple-peer). It was designed to easily create tree overlays 
-but may be useful in other cases too.
+This library simplifies the bootstrapping of WebRTC connections made with [Simple
+Peers](https://github.com/feross/simple-peer) by passing all connection requests to the same root peer.
 
 Any potential peer connects to the bootstrap server with the bootstrap client and requests a connection.
 The request is passed to the root which is then responsible for either
