@@ -1,22 +1,24 @@
-This library enables the bootstrapping of a WebRTC overlay made of [Simple
-Peers](https://github.com/feross/simple-peer). 
-
-The handshake between the requester and the answerer are performed over
-WebSockets connected to the bootstrap server. After the handshake has been
-performed, the websocket connections are closed to conserve resources.
+This library enables the bootstrapping of WebRTC connections made with [Simple
+Peers](https://github.com/feross/simple-peer). It is designed to easily create tree overlays 
+but may be useful in other cases too.
 
 Any potential peer connects to the bootstrap server with the bootstrap client and requests a connection.
 The request is passed to the root which is then responsible for either
 accepting the connection or passing it down to another peer through an already
-existing connection. Any peer may fulfill the request by creating a
+existing connection. Any peer may answer the request by creating a
 connection to the request originator.
+
+
+The handshake between the requester and the answerer are performed over
+WebSockets connected to the bootstrap server. After the handshake has been
+performed, the websocket connections are closed to conserve resources.
 
 
 # Usage
 
     // On the root process
 
-    var bootstrap = require('webrtc-overlay-bootstrap')('bootstrap-server hostname or ip-address:port')
+    var bootstrap = require('webrtc-bootstrap')('bootstrap-server hostname or ip-address:port')
     var newcomers = {}
 
     // Register to obtain requests
@@ -29,7 +31,10 @@ connection to the request originator.
       if (!newcomers[req.origin]) {
         console.log('Creating connection to signaling peer')
         newcomers[req.origin] = bootstrap.connect(req)
-        newcomers[req.origin].on('data', console.log)
+        newcomers[req.origin].on('data', function (data) {
+          console.log(data)
+          newcomers[req.origin].send('world')
+        })
       } else {
         // Pass the signal data
         newcomers[req.origin].signal(req.signal)
@@ -40,7 +45,10 @@ connection to the request originator.
 
     var bootstrap = ...
     var p = bootstrap.connect()
-    p.on('connect', function () { p.send('hello') })
+    p.on('connect', function () { p.send('ping') })
+    p.on('data', function (data) {
+      console.log(data)
+    })
 
 # Bootstrap client
 
