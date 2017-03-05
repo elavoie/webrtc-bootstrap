@@ -65,7 +65,7 @@ itself with the following properties:
   - `req.signal`: the SimplePeer signal to establish the WebRTC connection.
     Because of the ICE trickle protocol for signaling, the same peer may
     trigger multiple calls to *onRequest* (unless `peerOpts.tricke: false`). 
-    All subsequent requests should be routed to the same peer.
+    All following requests should be routed to the same peer with `peer.signal(req.signal)`.
 
 ## peer =  bootstrap.connect([req, peerOpts])
 
@@ -79,9 +79,6 @@ finish the handshake.
 *peerOpts* are options to be passed to the [SimplePeer](https://github.com/feross/simple-peer) constructor. Defaults to `{}`.
 
 Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
-
-Any following requests by the same originator (`req.origin`) should to be given
-manually to the peer with `peer.signal(req.signal)`.
 
 After a connect call if the connection succeeds, *peer* will emit the usual 'connect' event. 
 Two new events are added compared to the basic Simple Peer:
