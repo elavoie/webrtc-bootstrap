@@ -3,8 +3,7 @@ Peers](https://github.com/feross/simple-peer).
 
 The handshake between the requester and the answerer are performed over
 WebSockets connected to the bootstrap server. After the handshake has been
-performed the websocket connections are closed to conserve resources on the
-bootstrap server.
+performed the websocket connections are closed to conserve resources.
 
 Any potential peer connects to the bootstrap server and requests a connection.
 The request is passed to the root which is then responsible for either
@@ -58,9 +57,8 @@ itself with the following properties:
     (automatically created by the bootstrap server)
   - `req.signal`: the SimplePeer signal to establish the WebRTC connection.
     Because of the ICE trickle protocol for signaling, the same peer may
-    trigger multiple calls to *onRequest* (unless
-    `peerOpts.tricke: false`). All subsequent requests should be routed to the
-    same peer.
+    trigger multiple calls to *onRequest* (unless `peerOpts.tricke: false`). 
+    All subsequent requests should be routed to the same peer.
 
 ## peer =  bootstrap.connect([req, peerOpts])
 
@@ -71,12 +69,12 @@ used, then a WebSocket connection will be established with the originator
 (`req.origin`) through the bootstrap server to answer the signaling offer and
 finish the handshake. 
 
-*peerOpts* are options to be passed to the [SimplePeer](https://github.com/feross/simple-peer) constructor.
+*peerOpts* are options to be passed to the [SimplePeer](https://github.com/feross/simple-peer) constructor. Defaults to `{}`.
 
 Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
 
 Any following requests by the same originator (`req.origin`) should to be given
-explicitly to the peer with `peer.signal(req.signal)`.
+manually to the peer with `peer.signal(req.signal)`.
 
 After a connect call if the connection succeeds, *peer* will emit the usual 'connect' event. 
 Two new events are added compared to the basic Simple Peer:
