@@ -16,7 +16,7 @@ connection to the request originator.
 
     // On the root process
 
-    var bootstrap = require('webrtc-tree-overlay-bootstrap')('bootstrap-server hostname or ip-address:port')
+    var bootstrap = require('webrtc-overlay-bootstrap')('bootstrap-server hostname or ip-address:port')
     var newcomers = {}
 
     // Register to obtain requests
