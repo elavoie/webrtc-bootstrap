@@ -3,13 +3,13 @@ Peers](https://github.com/feross/simple-peer).
 
 The handshake between the requester and the answerer are performed over
 WebSockets connected to the bootstrap server. After the handshake has been
-performed the websocket connections are closed to conserve resources.
+performed, the websocket connections are closed to conserve resources.
 
-Any potential peer connects to the bootstrap server and requests a connection.
+Any potential peer connects to the bootstrap server with the bootstrap client and requests a connection.
 The request is passed to the root which is then responsible for either
 accepting the connection or passing it down to another peer through an already
-existing connection. Any peer may fulfill the request it received by creating a
-connection to the request originator through the bootstrap server.
+existing connection. Any peer may fulfill the request by creating a
+connection to the request originator.
 
 
 # Usage
