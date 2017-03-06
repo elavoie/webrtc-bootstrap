@@ -84,7 +84,7 @@ tape('README example', function (t) {
   p.on('data', function (data) {
     log(data)
     t.equal(data.toString(), 'pong')
-		p.destroy()
+    p.destroy()
     bootstrap.close()
     server.close()
     t.end()
