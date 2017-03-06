@@ -48,12 +48,18 @@ Client.prototype.connect = function (req, opts) {
   var messageNb = 0
 
   if (!req.origin) {
-    peerOpts.initiator = true
+    var peerOptsCopy = {}
+    for (var p in peerOpts) {
+      peerOptsCopy[p] = peerOpts[p]
+    }
+    peerOptsCopy.initiator = true
+  } else {
+    peerOptsCopy = peerOpts
   }
 
   log('creating SimplePeer() with opts:')
-  log(peerOpts)
-  var peer = new SimplePeer(peerOpts)
+  log(peerOptsCopy)
+  var peer = new SimplePeer(peerOptsCopy)
 
   var signalQueue = []
 
