@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/elavoie/webrtc-bootstrap.svg?branch=master)](https://travis-ci.org/elavoie/webrtc-bootstrap)
+
 This library simplifies the bootstrapping of WebRTC connections made with [Simple
 Peers](https://github.com/feross/simple-peer) by passing all connection requests to the same root peer.
 
