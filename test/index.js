@@ -84,9 +84,7 @@ tape('README example', function (t) {
   p.on('data', function (data) {
     log(data)
     t.equal(data.toString(), 'pong')
-    for (var n in newcomers) {
-      newcomers[n].destroy()
-    }
+		p.destroy()
     bootstrap.close()
     server.close()
     t.end()
