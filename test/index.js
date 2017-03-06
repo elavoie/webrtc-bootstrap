@@ -2,7 +2,7 @@ var tape = require('tape')
 var wrtc = require('wrtc')
 var debug = require('debug')
 var log = debug('test')
-var Server = require('../src/server')
+var Server = require('webrtc-bootstrap-server')
 var Client = require('../')
 
 var secret = 'secret'

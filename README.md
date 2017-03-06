@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/elavoie/webrtc-bootstrap.svg?branch=master)](https://travis-ci.org/elavoie/webrtc-bootstrap)
 
-This library simplifies the bootstrapping of WebRTC connections made with [Simple
-Peers](https://github.com/feross/simple-peer) by passing all connection requests to the same root peer.
+This library simplifies the bootstrapping of WebRTC connections made with
+[Simple Peers](https://github.com/feross/simple-peer) by passing all connection
+requests to the same root peer.  This the client library for the
+[webrtc-bootstrap-server](https://github.com/elavoie/webrtc-bootstrap-server).
 
 Any potential peer connects to the bootstrap server with the bootstrap client and requests a connection.
 The request is passed to the root which is then responsible for either
@@ -56,9 +58,10 @@ performed, the websocket connections are closed to conserve resources.
 ## bootstrap.root(secret, onRequest(req))
 
 *secret* is an alphanumeric string that has been set up during the server
-configuration (see below in the server configuration). It becomes a route for
-the root WebSocket connection. It ensures only the the authorized root will
-receive requests.
+configuration (see
+[webrtc-bootstrap-server](https://github.com/elavoie/webrtc-bootstrap-server)).
+It becomes a route for the root WebSocket connection. It ensures only the the
+authorized root will receive requests.
 
 *onRequest(req)* is a callback that will be called with a request object,
 itself with the following properties:
@@ -87,27 +90,6 @@ finish the handshake.
 Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
 
 After a connect call if the connection succeeds, *peer* will emit the usual 'connect' event. 
-
-# Bootstrap server
-
-The server can be run locally for tests or deployed on any public server
-(server with a public IP address) that supports WebSockets.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-## Usage
-
-    # Using the configuration file
-    node bin/server path_to_config.json
-
-    # Or using environment variables
-    SECRET=12345 node bin/server
-
-## Secret configuration
-
-Please clone this repository, copy config.example.json to config.json, and
-change the secret in the config.json file to ensure only your root node can
-connect as root to the bootstrap server.
 
 # Projects
 
