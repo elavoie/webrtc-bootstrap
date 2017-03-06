@@ -1,23 +1,27 @@
 var http = require('http')
 var ws = require('ws')
 var debug = require('debug')
-var log = debug('webrtc-tree-overlay-signaling')
+var log = debug('webrtc-bootstrap')
 var randombytes = require('randombytes')
 var express = require('express')
 var app = express()
 var path = require('path')
 app.use(express.static(path.join(__dirname, '../public')))
 
-function Server (port, secret) {
+function Server (secret, port, opts) {
   port = port || process.env.PORT || 5000
   secret = secret || process.env.SECRET
+  opts = opts || {}
+
+  opts.timeout = opts.timeout || 30 * 1000
 
   if (!secret) {
     throw new Error('Invalid secret: ' + secret)
   }
 
   var root = null
-  var prospects = {}
+  var prospects = this.prospects = {}
+
   function closeProspect (id) {
     if (prospects[id]) prospects[id].close()
   }
@@ -52,7 +56,7 @@ function Server (port, secret) {
 
   this.server = new ws.Server({server: this.httpServer})
     .on('connection/' + secret, function (ws) {
-      log('root connected for webrtc-signaling')
+      log('root connected')
       ws.on('message', function (data) {
         log('WARNING: unexpected message from root: ' + data)
       })
@@ -62,18 +66,31 @@ function Server (port, secret) {
       function remove () {
         log('node ' + id + ' disconnected')
         delete prospects[id]
+        clearTimeout(timeout)
       }
       var id = ws.id = randombytes(16).hexSlice()
       log('node connected with id ' + id)
       ws.on('message', messageHandler(id))
       ws.on('close', remove)
       prospects[id] = ws
-      setTimeout(function () {
+      var timeout = setTimeout(function () {
         closeProspect(id)
-      }, 30 * 1000)
+      }, opts.timeout)
     })
 
   return this
+}
+
+Server.prototype.close = function () {
+  log('closing ws server')
+  this.server.close()
+  log('closing http server')
+  this.httpServer.close()
+  log('closing all prospects')
+  for (var p in this.prospects) {
+    log(this.prospects[p].close)
+    this.prospects[p].close()
+  }
 }
 
 module.exports = Server

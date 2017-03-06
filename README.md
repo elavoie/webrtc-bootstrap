@@ -67,24 +67,24 @@ itself with the following properties:
     trigger multiple calls to *onRequest* (unless `peerOpts.tricke: false`). 
     All following requests should be routed to the same peer with `peer.signal(req.signal)`.
 
-## peer =  bootstrap.connect([req, peerOpts])
+## peer =  bootstrap.connect([req, opts])
 
-*req* is a request object (see `bootstrap.root`).  If it is `undefined` or
+*req* is an optional request object (see `bootstrap.root`).  If it is `undefined` or
 `falsy`, `initiator: true` will be set on *peerOpts* to initiate the signaling
 protocol. All the requests will go to the root. Otherwise, if a valid *req* is
 used, then a WebSocket connection will be established with the originator
 (`req.origin`) through the bootstrap server to answer the signaling offer and
 finish the handshake. 
 
-*peerOpts* are options to be passed to the [SimplePeer](https://github.com/feross/simple-peer) constructor. Defaults to `{}`.
+*opts* are further options:
+
+`opts.peerOpts` are options to be passed to the [SimplePeer](https://github.com/feross/simple-peer) constructor. Defaults to `{}`.
+
+`opts.cb(err, peer)` is an optional callback to handle bootstrapping errors.
 
 Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
 
 After a connect call if the connection succeeds, *peer* will emit the usual 'connect' event. 
-Two new events are added compared to the basic Simple Peer:
-  1. If the connection fails, *peer* will emit a 'Bootstrap timeout' error.
-  2. During the handshake protocol, *peer* emits the 'identifier' event with
-     the id it has been assigned by the bootstrap server.
 
 # Bootstrap server
 

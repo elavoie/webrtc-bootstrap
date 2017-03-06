@@ -1,12 +1,12 @@
 var Socket = require('simple-websocket')
 var SimplePeer = require('simple-peer')
 var debug = require('debug')
-var log = debug('webrtc-tree-overlay-signaling:Client')
+var log = debug('webrtc-bootstrap')
 
 function Client (host) {
   this.host = host
   this.rootSocket = null
-  this.socket = null
+  this.sockets = {}
 }
 
 Client.prototype.root = function (secret, onRequest) {
@@ -29,18 +29,27 @@ Client.prototype.root = function (secret, onRequest) {
 }
 
 var connectId = 0
-Client.prototype.connect = function (peerOpts, destination) {
-  peerOpts = peerOpts || {}
+Client.prototype.connect = function (req, opts) {
+  req = req || {}
+  opts = opts || {}
+  opts.timeout = opts.timeout || 30 * 1000
+  opts.cb = opts.cb || function (err, peer) {
+    if (err) peer.emit('error', new Error('Bootstrap Timeout'))
+  }
+  var peerOpts = opts.peerOpts || {}
 
-  var log = debug('webrtc-tree-overlay-signaling:connect ' + connectId++)
-  log('connect(' + peerOpts + ',' + destination + ')')
+  var self = this
+  var socketId = connectId++
+  var log = debug('webrtc-bootstrap:connect ' + socketId)
+  log('connect(' + JSON.stringify(req) + ',' + JSON.stringify(peerOpts) + ')')
 
   var messageNb = 0
 
-  if (!destination) {
+  if (!req.origin) {
     peerOpts.initiator = true
   }
 
+  log('creating SimplePeer(' + JSON.stringify(peerOpts) + ')')
   var peer = new SimplePeer(peerOpts)
 
   var signalQueue = []
@@ -48,7 +57,7 @@ Client.prototype.connect = function (peerOpts, destination) {
   peer.on('signal', function (data) {
     var message = JSON.stringify({
       origin: null, // set by server if null
-      destination: destination || null, // if null, then will be sent to root
+      destination: req.origin || null, // if null, then will be sent to root
       signal: data,
       rank: messageNb++
     })
@@ -62,18 +71,23 @@ Client.prototype.connect = function (peerOpts, destination) {
   })
   peer.once('connect', function () {
     log('bootstrap succeeded, closing signaling websocket connection')
-    success = true
+    clearTimeout(connectionTimeout)
     socket.destroy()
+    delete self.sockets[socketId]
+    opts.cb(null, peer)
   })
-  setTimeout(function () {
-    if (!success) {
-      log('bootstrap timeout, closing signaling websocket connection')
-      socket.destroy()
-      peer.emit('error', new Error('Bootstrap timeout'))
-    }
-  }, 60 * 1000)
 
-  var success = false
+  if (req.signal) {
+    peer.signal(req.signal)
+  }
+
+  var connectionTimeout = setTimeout(function () {
+    log('bootstrap timeout, closing signaling websocket connection')
+    socket.destroy()
+    delete self.sockets[socketId]
+    opts.cb(new Error('Bootstrap timeout'), peer)
+  }, opts.timeout)
+
   var socketConnected = false
   var socket = new Socket('ws://' + this.host + '/join')
     .on('connect', function () {
@@ -96,15 +110,28 @@ Client.prototype.connect = function (peerOpts, destination) {
       // messages directly rather than through the tree
       // overlay: our next signals will go directly
       // to the destination through the bootstrap server
-      destination = destination || message.origin
-
-      // message.destination is our id
-      peer.emit('identifier', message.destination)
+      req.origin = req.origin || message.origin
 
       peer.signal(message.signal)
     })
 
+  this.sockets[socketId] = socket
+
   return peer
+}
+
+Client.prototype.close = function () {
+  log('closing')
+  if (this.rootSocket) {
+    log('closing root socket')
+    this.rootSocket.destroy()
+  }
+
+  log('closing remaining sockets')
+  for (var id in this.sockets) {
+    log('closing socket[' + id + ']')
+    this.sockets[id].destroy()
+  }
 }
 
 module.exports = Client
