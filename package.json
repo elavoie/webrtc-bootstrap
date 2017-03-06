@@ -1,6 +1,6 @@
 {
   "name": "webrtc-bootstrap",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Bootstrap client and server to bootstrap WebRTC connections made with simple-peer",
   "main": "src/index.js",
   "scripts": {

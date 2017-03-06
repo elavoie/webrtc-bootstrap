@@ -41,7 +41,9 @@ Client.prototype.connect = function (req, opts) {
   var self = this
   var socketId = connectId++
   var log = debug('webrtc-bootstrap:connect ' + socketId)
-  log('connect(' + JSON.stringify(req) + ',' + JSON.stringify(peerOpts) + ')')
+  log('connect(' + JSON.stringify(req) + ',' + peerOpts.toString() + ')')
+  log('peerOpts:')
+  log(peerOpts)
 
   var messageNb = 0
 
@@ -49,7 +51,8 @@ Client.prototype.connect = function (req, opts) {
     peerOpts.initiator = true
   }
 
-  log('creating SimplePeer(' + JSON.stringify(peerOpts) + ')')
+  log('creating SimplePeer() with opts:')
+  log(peerOpts)
   var peer = new SimplePeer(peerOpts)
 
   var signalQueue = []
