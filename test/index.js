@@ -20,7 +20,7 @@ tape('Basic startup shutdown tests', function (t) {
 })
 
 tape('Root request on connection', function (t) {
-  var server = new Server(secret, port, { timeout: 2 * 1000 })
+  var server = new Server(secret, port, { timeout: 5 * 1000 })
   t.ok(server)
   var bootstrap = new Client('localhost:' + port)
   t.ok(bootstrap)
@@ -36,7 +36,7 @@ tape('Root request on connection', function (t) {
 
   var p = bootstrap.connect(null, {
     peerOpts: { wrtc: wrtc },
-    timeout: 2 * 1000,
+    timeout: 5 * 1000,
     cb: function (err, peer) {
       t.equal(err.message, 'Bootstrap timeout')
       bootstrap.close()
@@ -84,7 +84,6 @@ tape('README example', function (t) {
   p.on('data', function (data) {
     log(data)
     t.equal(data.toString(), 'pong')
-    p.destroy()
     for (var n in newcomers) {
       newcomers[n].destroy()
     }
