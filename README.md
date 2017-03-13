@@ -99,3 +99,4 @@ a tree.
 
 Submit a pull-request to add your own!
 
+MIT. Copyright (c) [Erick Lavoie](http://ericklavoie.com).

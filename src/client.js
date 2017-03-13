@@ -11,7 +11,7 @@ function Client (host) {
 
 Client.prototype.root = function (secret, onRequest) {
   log('root(' + secret + ')')
-  this.rootSocket = new Socket('ws://' + this.host + '/' + secret)
+  this.rootSocket = new Socket('ws://' + this.host + '/' + secret + '/webrtc-bootstrap-root')
     .on('connect', function () {
       log('root(' + secret + ') connected')
     })
