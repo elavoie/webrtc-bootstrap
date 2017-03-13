@@ -9,7 +9,7 @@ var secret = 'secret'
 var port = 5000
 
 tape('Basic startup shutdown tests', function (t) {
-  var server = new Server(secret, port)
+  var server = new Server(secret, { port: port })
   t.ok(server)
   var bootstrap = new Client('localhost:' + port)
   t.ok(bootstrap)
@@ -20,7 +20,7 @@ tape('Basic startup shutdown tests', function (t) {
 })
 
 tape('Root request on connection', function (t) {
-  var server = new Server(secret, port, { timeout: 5 * 1000 })
+  var server = new Server(secret, { port: port, timeout: 5 * 1000 })
   t.ok(server)
   var bootstrap = new Client('localhost:' + port)
   t.ok(bootstrap)
@@ -48,7 +48,7 @@ tape('Root request on connection', function (t) {
 })
 
 tape('README example', function (t) {
-  var server = new Server(secret, port)
+  var server = new Server(secret)
   t.ok(server)
 
   var bootstrap = new Client('localhost:' + port)
