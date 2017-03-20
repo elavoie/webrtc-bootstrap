@@ -121,6 +121,9 @@ Client.prototype.connect = function (req, opts) {
       // to the destination through the bootstrap server
       req.origin = req.origin || message.origin
 
+      // Extract our own id from the correspondance
+      socket.id = message.destination
+
       peer.signal(message.signal)
     })
 
