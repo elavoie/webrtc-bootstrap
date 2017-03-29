@@ -126,6 +126,11 @@ Client.prototype.connect = function (req, opts) {
 
       peer.signal(message.signal)
     })
+    .on('error', function (err) {
+      log('error()')
+      log(err)
+      opts.cb(err)
+    })
 
   this.sockets[socketId] = socket
 
