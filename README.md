@@ -55,6 +55,15 @@ performed, the websocket connections are closed to conserve resources.
 
 # Bootstrap client
 
+## var bootstrap = new BootstrapClient(host, opts)
+
+Creates a new bootstrap client that will connect to 'host'. Opts may be one of the followings:
+````
+{
+    secure: false // if true uses 'wss://' otherwise 'ws://'
+}
+````
+
 ## bootstrap.root(secret, onRequest(req))
 
 *secret* is an alphanumeric string that has been set up during the server
