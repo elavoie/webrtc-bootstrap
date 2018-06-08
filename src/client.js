@@ -3,7 +3,13 @@ var SimplePeer = require('simple-peer')
 var debug = require('debug')
 var log = debug('webrtc-bootstrap')
 
-function Client (host) {
+function Client (host, opts) {
+  if (typeof opts === 'undefined') {
+    opts = {}
+  }
+  opts.secure = opts.secure || false
+
+  this.secure = opts.secure
   this.host = host
   this.rootSocket = null
   this.sockets = {}
@@ -11,7 +17,10 @@ function Client (host) {
 
 Client.prototype.root = function (secret, onRequest) {
   log('root(' + secret + ')')
-  this.rootSocket = new Socket('ws://' + this.host + '/' + secret + '/webrtc-bootstrap-root')
+  var protocol = this.secure ? 'wss://' : 'ws://'
+  var url = protocol + this.host + '/' + secret + '/webrtc-bootstrap-root'
+
+  this.rootSocket = new Socket(url)
     .on('connect', function () {
       log('root(' + secret + ') connected')
     })
@@ -98,7 +107,8 @@ Client.prototype.connect = function (req, opts) {
   }, opts.timeout)
 
   var socketConnected = false
-  var socket = new Socket('ws://' + this.host + '/join')
+  var protocol = this.secure ? 'wss://' : 'ws://'
+  var socket = new Socket(protocol + this.host + '/join')
     .on('connect', function () {
       socketConnected = true
       log('signaling websocket connected')
