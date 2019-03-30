@@ -3,6 +3,8 @@ var SimplePeer = require('simple-peer')
 var debug = require('debug')
 var log = debug('webrtc-bootstrap')
 
+var HEARTBEAT_INTERVAL = 10000 // ms
+
 function Client (host, opts) {
   if (typeof opts === 'undefined') {
     opts = {}
@@ -20,6 +22,8 @@ Client.prototype.root = function (secret, onRequest) {
   var protocol = this.secure ? 'wss://' : 'ws://'
   var url = protocol + this.host + '/' + secret + '/webrtc-bootstrap-root'
 
+  var interval = null
+
   this.rootSocket = new Socket(url)
     .on('connect', function () {
       log('root(' + secret + ') connected')
@@ -30,10 +34,17 @@ Client.prototype.root = function (secret, onRequest) {
     })
     .on('close', function () {
       log('root(' + secret + ') closing')
+      clearInterval(interval)
     })
     .on('error', function (err) {
       log('root(' + secret + ') error')
+      clearInterval(interval)
       throw err
+    })
+    .on('open', function () {
+      interval = setInterval(function () {
+        this.rootSocket.send('heartbeat')  
+      }, HEARTBEAT_INTERVAL)
     })
 }
 
