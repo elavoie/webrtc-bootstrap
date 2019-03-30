@@ -29,8 +29,13 @@ Client.prototype.root = function (secret, onRequest) {
       log('root(' + secret + ') connected')
     })
     .on('data', function (data) {
-      log('root(' + secret + ') offer received')
-      onRequest(JSON.parse(data))
+      var msg = JSON.parse(data)
+      if (msg === 'heartbeat') { 
+        log('root(' + secret + ') heartbeat') 
+      } else {
+        log('root(' + secret + ') offer received')
+        onRequest(msg)
+      }
     })
     .on('close', function () {
       log('root(' + secret + ') closing')
