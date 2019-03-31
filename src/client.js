@@ -125,7 +125,7 @@ Client.prototype.connect = function (req, opts) {
       }
 
       if (!_timeout) {
-        _timeout = _setTimeout(function () {
+        _timeout = setTimeout(function () {
           _timeout = null
           signal()
         }, 300)
