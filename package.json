@@ -1,6 +1,6 @@
 {
   "name": "webrtc-bootstrap",
-  "version": "3.1.6",
+  "version": "3.1.7",
   "description": "Bootstrap client and server to bootstrap WebRTC connections made with simple-peer",
   "main": "src/index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/elavoie/webrtc-bootstrap#readme",
   "dependencies": {
     "debug": "^2.6.9",
-    "simple-peer": "^9.3.0",
+    "simple-peer": "^6.4.4",
     "simple-websocket": "^7.2.0",
     "tape": "^4.10.1",
     "webrtc-bootstrap-server": "^3.1.4"

@@ -111,37 +111,6 @@ Client.prototype.connect = function (req, opts) {
     opts.cb(null, peer)
   })
 
-  // Monkey-patching to avoid simple-peer bug
-  // where submitting a signal right after the
-  // creation of the Peer creates an error
-  var _signal = peer.signal.bind(peer)
-  var _incomingQueue = []
-  var _timeout = null
-  peer.signal = function signal (data) {
-    if (peer._pc.iceConnectionState !== 'new') {
-      // Store incoming signals until ready
-      if (data) {
-        _incomingQueue.push(data)    
-      }
-
-      if (!_timeout) {
-        _timeout = setTimeout(function () {
-          _timeout = null
-          signal()
-        }, 300)
-      }
-    } else {
-      // We are now ready, send all pending signals
-      clearTimeout(_timeout)
-      peer.signal = _signal
-      _incomingQueue.push(data)
-      while (_incomingQueue.length > 0) {
-        var d = _incomingQueue.shift()
-        peer.signal(d)
-      }
-    }
-  }
-
   if (req.signal) {
     peer.signal(req.signal)
   }
