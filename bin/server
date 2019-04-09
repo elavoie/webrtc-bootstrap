@@ -6,4 +6,6 @@ var secret = configFile
              ? JSON.parse(fs.readFileSync(configFile).toString())['secret']
              : process.env.SECRET
 
-new require('../').Server(secret)
+new require('../').Server(secret, {
+    public: __dirname + '/../public'
+})
