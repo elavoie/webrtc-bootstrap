@@ -57,7 +57,7 @@ Creates a new bootstrap client that will connect to 'host'. Opts may be one of t
 }
 ````
 
-### bootstrap.root(secret, onRequest(req))
+### bootstrap.root(secret, onRequest(req), cb)
 
 *secret* is an alphanumeric string that has been set up during the server
 configuration (see
@@ -73,6 +73,8 @@ itself with the following properties:
     Because of the ICE trickle protocol for signaling, the same peer may
     trigger multiple calls to *onRequest* (unless `peerOpts.tricke: false`). 
     All following requests should be routed to the same peer with `peer.signal(req.signal)`.
+
+*cb(err)* is called after either the connection to the server succeeded or failed.
 
 ### peer =  bootstrap.connect([req, opts])
 

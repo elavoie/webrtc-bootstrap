@@ -17,7 +17,7 @@ function Client (host, opts) {
   this.sockets = {}
 }
 
-Client.prototype.root = function (secret, onRequest) {
+Client.prototype.root = function (secret, onRequest, cb) {
   log('root(' + secret + ')')
   var protocol = this.secure ? 'wss://' : 'ws://'
   var url = protocol + this.host + '/' + secret + '/webrtc-bootstrap-root'
@@ -27,6 +27,7 @@ Client.prototype.root = function (secret, onRequest) {
   this.rootSocket = new Socket(url)
     .on('connect', function () {
       log('root(' + secret + ') connected')
+      if (cb) return cb()
     })
     .on('data', function (data) {
       var msg = JSON.parse(data)
@@ -44,7 +45,7 @@ Client.prototype.root = function (secret, onRequest) {
     .on('error', function (err) {
       log('root(' + secret + ') error')
       clearInterval(interval)
-      throw err
+      if (cb) { return cb(err) }
     })
     .on('open', function () {
       interval = setInterval(function () {

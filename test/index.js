@@ -19,6 +19,19 @@ tape('Basic startup shutdown tests', function (t) {
   t.end()
 })
 
+tape('Root connection error to server', function (t) {
+  var bootstrap = new Client('localhost:' + port)
+  t.ok(bootstrap)
+
+  bootstrap.root(secret, function (req) {
+    t.fail('Connection to server should fail')
+  }, function (err) {
+    t.ok(err) 
+    bootstrap.close()
+    t.end()
+  })
+})
+
 tape('Root request on connection', function (t) {
   var server = new Server(secret, { port: port, timeout: 5 * 1000 })
   t.ok(server)
