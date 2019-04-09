@@ -39,6 +39,7 @@ function Server (secret, opts) {
   if (!opts.httpServer) {
     var app = express()
     if (opts.public) {
+      log('serving files over http at ' + opts.public)
       app.use(express.static(opts.public))
     }
     var port = opts.port || process.env.PORT || 5000
