@@ -6,6 +6,9 @@ var secret = configFile
              ? JSON.parse(fs.readFileSync(configFile).toString())['secret']
              : process.env.SECRET
 
+var port = process.env.PORT ? process.env.PORT : 5000
+
 new require('../').Server(secret, {
-    public: __dirname + '/../public'
+  public: __dirname + '/../public',
+  port: port
 })
