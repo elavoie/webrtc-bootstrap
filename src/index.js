@@ -1,4 +1,7 @@
 var client = require('./client')
-client.Server = require('./server')
+
+if (typeof window === 'undefined') {
+  client.Server = require('./server')
+}
 
 module.exports = client
