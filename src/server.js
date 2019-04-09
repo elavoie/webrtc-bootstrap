@@ -24,7 +24,7 @@ var random = {
 
 function Server (secret, opts) {
   secret = secret || process.env.SECRET
-  opts = opts || {}
+  opts = (typeof opts) === 'object' ? opts : {}
   opts.public = opts.public || null
   opts.timeout = opts.timeout || 30 * 1000
 
