@@ -83,7 +83,7 @@ Client.prototype.connect = function (req, opts) {
   }
 
   log('creating SimplePeer() with opts:')
-  log(peerOptsCopy)
+  log(JSON.stringify(peerOptsCopy))
   var peer = new SimplePeer(peerOptsCopy)
 
   var signalQueue = []

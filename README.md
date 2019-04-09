@@ -1,23 +1,18 @@
 [![Build Status](https://travis-ci.org/elavoie/webrtc-bootstrap.svg?branch=master)](https://travis-ci.org/elavoie/webrtc-bootstrap)
 
-This library simplifies the bootstrapping of WebRTC connections made with
+This library simplifies the bootstrapping of WebRTC overlays made with
 [Simple Peers](https://github.com/feross/simple-peer) by passing all connection
-requests to the same root peer.  This the client library for the
-[webrtc-bootstrap-server](https://github.com/elavoie/webrtc-bootstrap-server).
-
-Any potential peer connects to the bootstrap server with the bootstrap client and requests a connection.
-The request is passed to the root which is then responsible for either
-accepting the connection or passing it down to another peer through an already
-existing connection. Any peer may answer the request by creating a
-connection to the request originator.
-
+requests to the same root peer, which may answer the request itself or pass the request
+to another peer.  
 
 The handshake between the requester and the answerer are performed over
 WebSockets connected to the bootstrap server. After the handshake has been
 performed, the websocket connections are closed to conserve resources.
 
 
-# Usage
+# Client
+
+## Usage
 
     // On the root process
 
@@ -53,9 +48,9 @@ performed, the websocket connections are closed to conserve resources.
       console.log(data)
     })
 
-# Bootstrap client
+## API
 
-## var bootstrap = new BootstrapClient(host, opts)
+### var bootstrap = new BootstrapClient(host, opts)
 
 Creates a new bootstrap client that will connect to 'host'. Opts may be one of the followings:
 ````
@@ -64,7 +59,7 @@ Creates a new bootstrap client that will connect to 'host'. Opts may be one of t
 }
 ````
 
-## bootstrap.root(secret, onRequest(req))
+### bootstrap.root(secret, onRequest(req))
 
 *secret* is an alphanumeric string that has been set up during the server
 configuration (see
@@ -81,7 +76,7 @@ itself with the following properties:
     trigger multiple calls to *onRequest* (unless `peerOpts.tricke: false`). 
     All following requests should be routed to the same peer with `peer.signal(req.signal)`.
 
-## peer =  bootstrap.connect([req, opts])
+### peer =  bootstrap.connect([req, opts])
 
 *req* is an optional request object (see `bootstrap.root`).  If it is `undefined` or
 `falsy`, `initiator: true` will be set on *peerOpts* to initiate the signaling
@@ -99,6 +94,64 @@ finish the handshake.
 Returns *peer*, a [SimplePeer](https://github.com/feross/simple-peer) instance.
 
 After a connect call if the connection succeeds, *peer* will emit the usual 'connect' event. 
+
+# Server
+
+The server can be run locally for tests or deployed on any public server
+(server with a public IP address) that supports WebSockets.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+## Usage
+
+Command-line:
+
+````
+    # Using the configuration file
+    node bin/server path_to_config.json
+
+    # Or using environment variables
+    SECRET=12345 node bin/server
+````
+
+Library:
+
+````
+    var Server = require('webrtc-bootstrap').Server
+    var s = new Server('secret') 
+````
+
+## Secret configuration
+
+Please clone this repository, copy config.example.json to config.json, and
+change the secret in the config.json file to ensure only your root node can
+connect as root to the bootstrap server.
+
+## API
+
+### Server(secret, opts)
+
+`secret` is an alphanumeric string that is used by the client to connect as root.
+
+`opts` is an optional object with the default values:
+
+    {
+        public: null,
+        timeout: 30 * 1000 // ms,
+        httpServer: null,
+        port: 5000,
+        seed: null
+    }
+
+`opts.public` is the path to the public directory for serving static content.
+
+`opts.timeout` is the maximum allowed time for a candidate to successfully join the network.
+
+`opts.httpServer` is an existing http server.
+
+`opts.port` is the port used by the http server if none has been provided.
+
+`opts.seed` is a number to use as a seed for the pseudo-random generation of channel ids. If null, the crypto.randomBytes method is used instead.
 
 # Projects
 

@@ -1,0 +1,6 @@
+{
+    "secret": "EMpGMQADK1oR5n8xffrxYHeCO0RmW42Z46ZcGwTVO5WBzkXBHC6btGt1WBG4",
+    "host": "gentle-dusk-21544.herokuapp.com",
+    "host-localhost": "localhost:5000",
+    "host-heroku": "gentle-dusk-21544.herokuapp.com"
+}

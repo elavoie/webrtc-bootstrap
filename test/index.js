@@ -2,7 +2,7 @@ var tape = require('tape')
 var wrtc = require('wrtc')
 var debug = require('debug')
 var log = debug('test')
-var Server = require('webrtc-bootstrap-server')
+var Server = require('..').Server
 var Client = require('../')
 
 var secret = 'secret'
@@ -36,7 +36,7 @@ tape('Root request on connection', function (t) {
 
   var p = bootstrap.connect(null, {
     peerOpts: { wrtc: wrtc },
-    timeout: 5 * 1000,
+    timeout: 3 * 1000,
     cb: function (err, peer) {
       t.equal(err.message, 'Bootstrap timeout')
       bootstrap.close()
