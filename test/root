@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+var argv = require('minimist')(process.argv)
+var Client = require('..')
+var electronWebRTC = require('electron-webrtc')
+var debug = require('debug')
+var log = debug('webrtc-tree-overlay:root')
+var secret = argv.secret ? argv.secret : 'SECRET'
+var host = argv.host ? argv.host : 'genet.herokuapp.com'  
+
+if (argv['wrtc']) {
+  console.error('using wrtc')
+  var wrtc = require('wrtc')
+} else { // including --electron-webrtc
+  console.error('using electron-webrtc')
+  var wrtc = electronWebRTC({ headless: false }) 
+}
+
+var bootstrap = new Client(host)
+var newcomers = {}
+
+bootstrap.root(secret, function (req) {
+  // Remember previously created peers.  
+  // This way we can route multiple WebRTC handshake signals generated 
+  // by the ICE Trickle protocol to the same peer
+  if (!newcomers[req.origin]) {
+    console.log('Creating connection to signaling peer')
+    newcomers[req.origin] = bootstrap.connect(req, {
+      peerOpts: {
+        wrtc: wrtc
+      }
+    })
+    newcomers[req.origin].on('data', function (data) {
+      console.log('received data from ' + req.origin.slice(0,5) + ': ' + String(data))
+      newcomers[req.origin].send('pong')
+    })
+  } else {
+    console.log('Passing signal to ' + req.origin.slice(0,5) + ': ' + JSON.stringify(req.signal))
+    newcomers[req.origin].signal(req.signal)
+  }
+})

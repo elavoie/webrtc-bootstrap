@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+var argv = require('minimist')(process.argv)
+var Client = require('..')
+var electronWebRTC = require('electron-webrtc')
+var debug = require('debug')
+var log = debug('webrtc-bootstrap')
+var secret = argv.secret ? argv.secret : 'SECRET'
+var host = argv.host ? argv.host : 'genet.herokuapp.com'  
+
+if (argv['wrtc']) {
+  console.error('using wrtc')
+  var wrtc = require('wrtc')
+} else { // including --electron-webrtc
+  console.error('using electron-webrtc')
+  var wrtc = electronWebRTC({ headless: false }) 
+}
+var bootstrap = new Client(host)
+var p = bootstrap.connect(null, {
+  peerOpts: {
+    wrtc: wrtc
+  }
+})
+p.on('connect', function () { 
+  var ping = 'ping'
+  console.log('connected to root, sending: ' + ping)
+  p.send(ping) }
+)
+p.on('data', function (data) {
+  console.log('received data from root: ' + String(data)) 
+})

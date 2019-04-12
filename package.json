@@ -1,6 +1,6 @@
 {
   "name": "webrtc-bootstrap",
-  "version": "4.1.2",
+  "version": "4.2.0",
   "description": "Bootstrap client and server to bootstrap WebRTC connections made with simple-peer",
   "main": "src/index.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "ws": "^6.2.1"
   },
   "devDependencies": {
+    "electron-webrtc": "^0.3.0",
     "tape": "^4.10.1",
     "wrtc": "^0.3.7"
   }
