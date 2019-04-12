@@ -4,7 +4,6 @@ var Client = require('..')
 var electronWebRTC = require('electron-webrtc')
 var debug = require('debug')
 var log = debug('webrtc-bootstrap')
-var secret = argv.secret ? argv.secret : 'SECRET'
 var host = argv.host ? argv.host : 'genet.herokuapp.com'  
 
 if (argv['wrtc']) {

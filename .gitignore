@@ -1,3 +1,4 @@
 config.json
 package-lock.json
 node_modules/**
+public/browser.js

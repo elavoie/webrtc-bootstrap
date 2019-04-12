@@ -1,10 +1,11 @@
 {
   "name": "webrtc-bootstrap",
-  "version": "4.2.1",
+  "version": "4.3.0",
   "description": "Bootstrap client and server to bootstrap WebRTC connections made with simple-peer",
   "main": "src/index.js",
   "scripts": {
     "start": "DEBUG=webrtc* node bin/server",
+    "postinstall": "browserify src/browser.js -r -s browser -o public/browser.js;",
     "test": "tape test/index.js"
   },
   "repository": {

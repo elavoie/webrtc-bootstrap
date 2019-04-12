@@ -18,6 +18,13 @@
     </style>
   </head>
 <body>
-  WebRTC Bootstrap Server 
+  WebRTC Bootstrap 
+  <script src='browser.js'></script>
+  <script>
+    localStorage.debug = 'simple-peer,webrtc-bootstrap*'
+    setTimeout(function () {
+      browser(location.host, location.hash.slice(1), location.origin.indexOf('https') > -1)
+    }, 1000)
+  </script>
 </body>
 </html>
