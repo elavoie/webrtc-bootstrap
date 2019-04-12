@@ -19,10 +19,11 @@
   },
   "homepage": "https://github.com/elavoie/webrtc-bootstrap#readme",
   "dependencies": {
+    "browserify": "^16.2.3",
     "debug": "^2.6.9",
+    "express": "^4.16.3",
     "simple-peer": "^6.4.4",
     "simple-websocket": "^7.2.0",
-    "express": "^4.16.3",
     "ws": "^6.2.1"
   },
   "devDependencies": {
