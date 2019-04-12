@@ -100,12 +100,10 @@ Client.prototype.connect = function (req, opts) {
       rank: messageNb++
     })
     if (!socketConnected) {
-      log('connect() queuing message with signal:')
-      log(message)
+      log('connect() queuing message with signal: ' + JSON.stringify(message))
       signalQueue.push(message)
     } else {
-      log('connect() sending message with signal:')
-      log(message)
+      log('connect() sending message with signal: ' + JSON.stringify(message))
       socket.send(message)
     }
   })
@@ -140,7 +138,7 @@ Client.prototype.connect = function (req, opts) {
         var queue = signalQueue.slice(0)
         signalQueue = []
         for (var i = 0; i < queue.length; ++i) {
-          log('sending queued signal ' + (i+1) + '/' + queue.length)
+          log('sending queued signal ' + (i+1) + '/' + queue.length + ': ' + JSON.stringify(queue[i]))
           socket.send(queue[i])
         }
       }

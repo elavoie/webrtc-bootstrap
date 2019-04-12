@@ -3,7 +3,7 @@ var argv = require('minimist')(process.argv)
 var Client = require('..')
 var electronWebRTC = require('electron-webrtc')
 var debug = require('debug')
-var log = debug('webrtc-tree-overlay:root')
+var log = debug('webrtc-bootstrap:root')
 var secret = argv.secret ? argv.secret : 'SECRET'
 var host = argv.host ? argv.host : 'genet.herokuapp.com'  
 
@@ -26,6 +26,11 @@ bootstrap.root(secret, function (req) {
     console.log('Creating connection to signaling peer')
     newcomers[req.origin] = bootstrap.connect(req, {
       peerOpts: {
+        config: {
+          iceServers: [{
+            urls: 'stun:stun.l.google.com:19302'
+          }]
+        },
         wrtc: wrtc
       }
     })
@@ -34,7 +39,7 @@ bootstrap.root(secret, function (req) {
       newcomers[req.origin].send('pong')
     })
   } else {
-    console.log('Passing signal to ' + req.origin.slice(0,5) + ': ' + JSON.stringify(req.signal))
+    log('Candidate ' + req.origin.slice(0,5) + ' peer.signal(' + JSON.stringify(req.signal) + ')')
     newcomers[req.origin].signal(req.signal)
   }
 })
