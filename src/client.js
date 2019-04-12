@@ -118,6 +118,7 @@ Client.prototype.connect = function (req, opts) {
   })
 
   if (req.signal) {
+    log('peer.signal(' + JSON.stringify(req.signal) + ')')
     peer.signal(req.signal)
   }
 
@@ -157,6 +158,7 @@ Client.prototype.connect = function (req, opts) {
       // Extract our own id from the correspondance
       socket.id = message.destination
 
+      log('peer.signal(' + JSON.stringify(message.signal) + ')')
       peer.signal(message.signal)
     })
     .on('error', function (err) {
