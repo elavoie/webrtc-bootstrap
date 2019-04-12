@@ -6,6 +6,9 @@ var log = debug('webrtc-bootstrap')
 var HEARTBEAT_INTERVAL = 10000 // ms
 
 function Client (host, opts) {
+  if (!(this instanceof Client)) {
+    throw new Error('Function must be called as a constructor')
+  }
   if (typeof opts === 'undefined') {
     opts = {}
   }
