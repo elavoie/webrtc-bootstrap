@@ -153,6 +153,12 @@ connect as root to the bootstrap server.
 
 `opts.seed` is a number to use as a seed for the pseudo-random generation of channel ids. If null, the crypto.randomBytes method is used instead.
 
+### Server.upgrade(path, handler)
+
+`path` is a url ````String```` starting with a '/'
+
+`handler` is a ````Function````, ````function handler (ws, req) { ... }````, where ````ws```` is the websocket connection that resulted from the upgrade and ````req```` is the original http request.
+
 # Projects
 
 This library is used by the the following

@@ -28,6 +28,10 @@ function Server (secret, opts) {
   opts.public = opts.public || null
   opts.timeout = opts.timeout || 30 * 1000
 
+  var root = null
+  var prospects = this.prospects = {}
+  this._upgraders = []
+
   if (!secret) {
     throw new Error('Invalid secret: ' + secret)
   }
@@ -49,9 +53,6 @@ function Server (secret, opts) {
   } else {
     this.httpServer = opts.httpServer
   }
-
-  var root = null
-  var prospects = this.prospects = {}
 
   function closeProspect (id) {
     if (prospects[id]) prospects[id].close()
@@ -89,31 +90,6 @@ function Server (secret, opts) {
 
   log('Opening websocket connection for root on ' + secret)
 
-  var rootServer = this.rootServer = new ws.Server({ noServer: true })
-    .on('connection', function (ws) {
-      log('root connected')
-      var interval = null
-      ws.on('message', function (data) {
-        if (JSON.parse(data) === 'heartbeat') {
-          log('root heartbeat')
-        } else {
-          log('WARNING: unexpected message from root: ' + data)
-        }
-      })
-      ws.on('close', function () {
-        log('root closed')
-        clearInterval(interval)
-      })
-      ws.on('error', function (err) {
-        log('ERROR: root failed with error:  ' + err)
-        clearInterval(interval)
-      })
-      root = ws
-      interval = setInterval(function () {
-        ws.send(JSON.stringify('heartbeat'))
-      }, HEARTBEAT_INTERVAL)
-    })
-
   var server = this.server = new ws.Server({ noServer: true })
     .on('connection', function (ws) {
       function remove () {
@@ -138,36 +114,92 @@ function Server (secret, opts) {
       }, opts.timeout)
     })
 
+  var that = this
   this.httpServer.on('upgrade', function upgrade(request, socket, head) {
     const pathname = url.parse(request.url).pathname;
     log('httpServer url: ' + request.url + ', pathname: ' + pathname)
-    var rootPathName =  '/' + secret + '/webrtc-bootstrap-root'
-    var joinPathName = '/join'
-
-    if (pathname === rootPathName) {
-      log("upgrading connection to '" + rootPathName + "'")
-      rootServer.handleUpgrade(request, socket, head, function done(ws) {
-        log("upgraded connection to '" + rootPathName + "'")
-        rootServer.emit('connection', ws, request);
-      });
-    } else if (pathname === joinPathName) {
-      log("upgrading connection to '" + joinPathName + "'")
-      server.handleUpgrade(request, socket, head, function done(ws) {
-        log("upgraded connection to '" + joinPathName + "'")
-        server.emit('connection', ws, request);
-      });
-    } else {
-      socket.destroy();
+    for (var i = 0; i < that._upgraders.length; ++i) {
+      var upgrader = that._upgraders[i]
+      if (pathname === upgrader.path) {
+        log("upgrading connection to '" + upgrader.path + "'")
+        upgrader.wsServer.handleUpgrade(request, socket, head, function done(ws) {
+          log("upgraded connection to '" + upgrader.path + "'")
+          upgrader.wsServer.emit('connection', ws, request);
+        });
+        return
+      } 
     }
-  });
+
+    // No upgrader found
+    socket.destroy();
+  })
+
+  this.upgrade('/' + secret + '/webrtc-bootstrap-root', function (ws) {
+    log('root connected')
+    var interval = null
+    ws.on('message', function (data) {
+      if (JSON.parse(data) === 'heartbeat') {
+        log('root heartbeat')
+      } else {
+        log('WARNING: unexpected message from root: ' + data)
+      }
+    })
+    ws.on('close', function () {
+      log('root closed')
+      clearInterval(interval)
+    })
+    ws.on('error', function (err) {
+      log('ERROR: root failed with error:  ' + err)
+      clearInterval(interval)
+    })
+    root = ws
+    interval = setInterval(function () {
+      ws.send(JSON.stringify('heartbeat'))
+    }, HEARTBEAT_INTERVAL)
+  })
+
+  this.upgrade('/join', function (ws) {
+    function remove () {
+      log('node ' + id + ' disconnected')
+      delete prospects[id]
+      clearTimeout(timeout)
+    }
+    var id = null
+
+    if (opts.seed) {
+      id = crypto.createHash('md5').update(random.next().toString()).digest().hexSlice(0, 16)
+    } else {
+      id = crypto.randomBytes(16).hexSlice()
+    }
+    ws.id = id
+    log('node connected with id ' + id)
+    ws.on('message', messageHandler(id))
+    ws.on('close', remove)
+    prospects[id] = ws
+    var timeout = setTimeout(function () {
+      closeProspect(id)
+    }, opts.timeout)
+  })
 
   return this
 }
 
+// Handles websocket upgrades
+//
+// path: String (URL, ex: '/volunteer')
+// handler: Function (ws, request) {}
+Server.prototype.upgrade = function (path, handler) {
+  var wsServer = new ws.Server({ noServer: true })
+    .on('connection', handler) 
+  this._upgraders.push({ path: path, wsServer: wsServer })
+}
+
 Server.prototype.close = function () {
-  log('closing ws server')
-  this.server.close()
-  this.rootServer.close()
+  log('closing ws servers')
+  for (var i = 0; i < this._upgraders.length; ++i) {
+    this._upgraders[i].wsServer.close()
+  }
+  this._upgraders = []
   log('closing http server')
   this.httpServer.close()
   log('closing all prospects')
