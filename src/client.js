@@ -99,7 +99,7 @@ Client.prototype.connect = function (req, opts) {
       signal: data,
       rank: messageNb++
     })
-    if (!socketConnected) {
+    if (!socketConnected || signalQueue.length > 0) {
       log('connect() queuing message with signal: ' + JSON.stringify(message))
       signalQueue.push(message)
     } else {
