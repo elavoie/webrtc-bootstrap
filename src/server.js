@@ -192,6 +192,7 @@ Server.prototype.upgrade = function (path, handler) {
   var wsServer = new ws.Server({ noServer: true })
     .on('connection', handler) 
   this._upgraders.push({ path: path, wsServer: wsServer })
+  return this
 }
 
 Server.prototype.close = function () {
